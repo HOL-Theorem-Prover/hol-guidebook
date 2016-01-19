@@ -1,0 +1,7 @@
+body { font-family: verdana, sans-serif; width: 700px; margin-top: 3em; margin-left: auto; margin-right: auto }
+h1 { color: #1133cc }
+h2 { color: #3355aa }
+a { text-decoration: none }
+a:hover { text-decoration: underline }
+a:link { color: #2244ee }
+a:visited { color: #8866dd }

@@ -1,0 +1,101 @@
+<!doctype html>
+<head>
+  <title>HOL Tutorial</title>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+Welcome to my HOL tutorial
+===========================
+
+HOL stands for higher-order logic. HOL is also the name of the theorem prover.
+
+I assume you are familiar with functional programming and higher-order logic.
+(If you are not, don't worry, these topics will be introduced gently and are
+easy to pick up.) The main point of this tutorial is to show you how to build
+theories in the HOL theorem prover, assuming you have an idea of what you want
+to formalise and how to prove your theorems mathematically.
+
+If you have trouble with anything, there is plenty of community support
+available including mailing lists and online chat. See the [HOL website][]
+for details.
+
+Installation
+-------------
+Go to the [HOL website][].
+Follow the instructions there to install HOL.
+
+Alternatively, you can follow the first part of the
+[CakeML build instructions](https://code.cakeml.org/tree/master/build-instructions.sh).
+
+It is a good idea to set the environment variable `$HOLDIR` to point to the
+location of your HOL installation. I will refer to this directory by `$HOLDIR`
+from now on.
+
+Running hol
+------------
+Now you can run `hol` at the command line. You will be greeted with a welcome
+message, and prompted with a read-eval-print loop (REPL). This is in fact the
+REPL for the underlying ML system.
+
+HOL is just a library for theorem proving in Standard ML (abbreviated as ML).
+Interacting with HOL, therefore, can be seen as programming in ML. If you don't
+use any of the HOL-specific parts, you just have Standard ML:
+
+     >> 3 + 4;
+
+The HOL additions include new datatypes like `thm`, which represents a proven
+theorem. Some values of this type are already in scope:
+
+     >> SKOLEM_THM
+
+Script files
+-------------
+Usual practice is not to program directly at the REPL. Instead, you write a
+_script file_ which can be processed by a tool called `Holmake` to build a
+theory. A typical script file looks like this:
+
+    open HolKernel boolLib bossLib Parse
+
+    val _ = new_theory"test";
+
+    (* SML declarations  *)
+    (* for example: *)
+    val th = save_thm("SKOLEM_AGAIN",SKOLEM_THM);
+
+    val _ = export_theory();
+
+The script file above should be saved as `testScript.sml`, because the name passed to `new_theory` is `"test"`.
+To produce a theory from this script file, run `Holmake` as follows:
+
+    $ Holmake testTheory.uo
+
+`Holmake` knows to look for `testScript.sml` when given the target `testTheory.uo`.
+It will run the script and produce the following files as output:
+`testTheory.sig`, `testTheory.sml`, `testTheory.ui`, and `testTheory.uo`.
+
+The `testTheory.sig` file contains a summary of the contents of the generated
+theory.  In this case, you will see that `testTheory` contains a single
+theorem, which is just a copy of `SKOLEM_THM` saved under the name
+`SKOLEM_AGAIN`.
+
+The other generated files are the mechanism by which persistent theories are
+implemented on disk, and can be ignored for now.
+
+Interaction
+------------
+One would like to develop a script file with the same ease as programming at
+the REPL. For this, there are plugins for two text editors, Vim and Emacs,
+which enable script-file writing alongside an interactive HOL session. Both are included in your HOL installation. The Vim plugin is documented
+
+Types and Terms
+----------------
+
+Theorems
+---------
+
+Theories
+---------
+
+[HOL website]: http://hol-theorem-prover.org
+</body>

@@ -1,0 +1,9 @@
+INCLUDES=$(HOLDIR)/Manual/Tools
+tutorial.html: tutorial.md
+	markdown < $< > $@
+tutorial.md: tutorial.smd $(HOLDIR)/Manual/Tools/polyscripter
+	$(HOLDIR)/Manual/Tools/polyscripter < $< > $@
+.PHONY: publish
+publish: tutorial.html style.css
+	rsync tutorial.html xrchz.net:/srv/hol-webpages/topublish/tutorial/index.html
+	rsync style.css xrchz.net:/srv/hol-webpages/topublish/tutorial/
