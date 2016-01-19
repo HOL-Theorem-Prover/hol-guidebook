@@ -10,7 +10,7 @@ Welcome to my HOL tutorial
 
 HOL stands for higher-order logic. HOL is also the name of the theorem prover.
 
-I assume you are familiar with functional programming and higher-order logic.
+I assume you are familiar with [functional programming][w:fp] and [higher-order logic][7].
 (If you are not, don't worry, these topics will be introduced gently and are
 easy to pick up.) The main point of this tutorial is to show you how to build
 theories in the HOL theorem prover, assuming you have an idea of what you want
@@ -20,7 +20,9 @@ If you have trouble with anything, there is plenty of community support
 available including mailing lists and online chat. See the [HOL website][]
 for details.
 
-[HOL website]: http://hol-theorem-prover.org
+[HOL website]: https://hol-theorem-prover.org
+[7]: http://www.cas.mcmaster.ca/sqrl/papers/SQRLreport18_rev2.pdf
+[w:fp]: https://en.wikipedia.org/wiki/Functional_programming
 
 Installation
 -------------
@@ -91,7 +93,7 @@ the REPL. For this, there are plugins for two text editors, Vim and Emacs,
 which enable script-file writing alongside an interactive HOL session. Both are
 included in your HOL installation. The Vim plugin is documented at
 `$HOLDIR/tools/vim/README` ([also here](https://github.com/HOL-Theorem-Prover/HOL/tree/master/tools/vim/README)).
-The Emacs plugin is documented [online](http://hol-theorem-prover.org/hol-mode.html).
+The Emacs plugin is documented [online](https://hol-theorem-prover.org/hol-mode.html).
 
 The idea behind these interaction plugins is to write a script file that will
 eventually be suitable for processing by `Holmake`, but to see, step-by-step in
