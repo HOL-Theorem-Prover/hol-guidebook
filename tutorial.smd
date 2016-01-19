@@ -20,6 +20,8 @@ If you have trouble with anything, there is plenty of community support
 available including mailing lists and online chat. See the [HOL website][]
 for details.
 
+[HOL website]: http://hol-theorem-prover.org
+
 Installation
 -------------
 Go to the [HOL website][].
@@ -47,7 +49,7 @@ use any of the HOL-specific parts, you just have Standard ML:
 The HOL additions include new datatypes like `thm`, which represents a proven
 theorem. Some values of this type are already in scope:
 
-     >> SKOLEM_THM
+     >> SKOLEM_THM;
 
 Script files
 -------------
@@ -55,7 +57,7 @@ Usual practice is not to program directly at the REPL. Instead, you write a
 _script file_ which can be processed by a tool called `Holmake` to build a
 theory. A typical script file looks like this:
 
-    open HolKernel boolLib bossLib Parse
+    open HolKernel boolLib bossLib Parse;
 
     val _ = new_theory"test";
 
@@ -86,16 +88,86 @@ Interaction
 ------------
 One would like to develop a script file with the same ease as programming at
 the REPL. For this, there are plugins for two text editors, Vim and Emacs,
-which enable script-file writing alongside an interactive HOL session. Both are included in your HOL installation. The Vim plugin is documented
+which enable script-file writing alongside an interactive HOL session. Both are
+included in your HOL installation. The Vim plugin is documented at
+`$HOLDIR/tools/vim/README` ([also here](https://github.com/HOL-Theorem-Prover/HOL/tree/master/tools/vim/README)).
+The Emacs plugin is documented [online](http://hol-theorem-prover.org/hol-mode.html).
 
-Types and Terms
-----------------
+The idea behind these interaction plugins is to write a script file that will
+eventually be suitable for processing by `Holmake`, but to see, step-by-step in
+the REPL, what is happening at each point of the script file as you are writing
+it.
+
+As an example, let's try the Vim plugin on the `testScript.sml` file from
+above. First, install the Vim plugin by following the instructions in its
+`README`. Next, open `testScript.sml` in Vim, and also start `hol`. I usually
+put these two windows (`hol` and `vim`) side by side, so I can see what is
+happening in both at once.
+
+We begin processing from the top of the file. Select the first line (the one
+containing `open`). (To select a line in `vim`, position the cursor on the line
+and press `V`.) Tell `hol` to load those theories and libraries by typing `hl`.
+You should see some output like:
+
+    HOLLoadSendQuiet HolKernel boolLib bossLib Parse completed
+
+Next, move down to the line containing `save_thm` and send it to `hol` by
+typing `hs`. You should see some output like:
+
+    >>- val th = save_thm("SKOLEM_AGAIN",SKOLEM_THM);
+
+You can, at this point, also write directly into the REPL if you want.
+For example, to see that this theorem has no hypotheses, try:
+
+    >> hyp th;
+
+But of course, if you want to add anything to the theory you produce, you
+should write it in the script file.
+
+Types and Parsing
+------------------
+The syntax of higher-order logic includes types and terms. These are two of the
+main datatypes implemented by HOL, over and above what is provided by ML. Here
+is a type:
+
+    >> bool;
+
+In fact, `bool` is one of a handful of types that are bound to ML variables by
+default. In general, you can make a type by providing the name of a type
+operator and a list of arguments:
+
+    >> mk_type("bool",[]);
+
+    >> mk_type("list",[bool]); (* the type of a list of Booleans *)
+
+But it is often more convenient to call the _type parser_ rather than `mk_type` directly.
+
+    >> ``:num list``;
+
+The backticks (\`) above are special syntax provided by HOL for calling the
+type parser. The underlying parser function is called `Type`. We can call the
+parser more directly:
+
+    >> Type `:num list`;
+
+The single backticks represent another special syntax, this time for a
+_quotation_. Removing the special syntax entirely, we can write:
+
+    >> Type [QUOTE":num list"];
+
+Terms
+------
 
 Theorems
 ---------
 
-Theories
----------
+Searching for theorems
+-----------------------
 
-[HOL website]: http://hol-theorem-prover.org
+Simple proofs
+--------------
+
+Useful tactics
+---------------
+
 </body>

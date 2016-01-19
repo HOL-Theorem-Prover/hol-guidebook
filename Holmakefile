@@ -1,6 +1,6 @@
 INCLUDES=$(HOLDIR)/Manual/Tools
 tutorial.html: tutorial.md
-	markdown < $< > $@
+	pandoc < $< > $@
 tutorial.md: tutorial.smd $(HOLDIR)/Manual/Tools/polyscripter
 	$(HOLDIR)/Manual/Tools/polyscripter < $< > $@
 .PHONY: publish
