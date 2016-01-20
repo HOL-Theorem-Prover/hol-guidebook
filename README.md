@@ -2,7 +2,7 @@ HOL Guidebook
 =============
 A guidebook to the [HOL theorem prover](https://hol-theorem-prover.org).
 **N.B.: WORK IN PROGRESS.**
-There is a live version at [https://hol-theorem-prover.org/guidebook]().
+There is a live version at https://hol-theorem-prover.org/guidebook.
 
 Contributing
 -------------
