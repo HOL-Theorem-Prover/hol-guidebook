@@ -1,4 +1,4 @@
-% HOL Guidebook
+% [HOL Guidebook](https://github.com/HOL-Theorem-Prover/hol-guidebook)
 
 Introduction
 -------------
@@ -194,6 +194,9 @@ Theorems
 Searching for theorems
 -----------------------
 
+Evaluation
+-----------
+
 Theories
 ---------
 Every type operator (like `list`) above is defined in some _theory_, in this
@@ -205,3 +208,24 @@ Simple proofs
 
 Useful tactics
 ---------------
+
+Standard theories
+------------------
+
+Defining constants
+------------------
+
+Defining datatypes
+------------------
+
+More proofs
+------------
+
+Conversions
+------------
+
+Writing tactics
+----------------
+
+Abbreviations and overloading
+------------------------------
