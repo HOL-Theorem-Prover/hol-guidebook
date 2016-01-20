@@ -164,18 +164,41 @@ This is syntactic sugar for:
 
     >> Type [QUOTE":", ANTIQUOTE (mk_type("list",[alpha])), QUOTE " list"];
 
-Theories
----------
-Every type operator (like `list`) above is
-
 Terms
 ------
+The terms of higher-order logic include: variables, constants, abstractions,
+and combinations (sometimes called applications). Here are examples of all
+these kinds of terms, first built using term-making functions and then built
+using the term parser:
+
+    >> val x = mk_var("x",beta);
+
+    >> val z = mk_const("0",``:num``);
+
+    >> val f = mk_abs(x,z);
+
+    >> mk_comb(f,mk_var("y",beta));
+
+
+    >> val x = ``x:β``; (* or ``x:'b`` *)
+
+    >> val z = ``0``;
+
+    >> val f = ``λx:β. 0``; (* or ``\x:'b. 0`` *)
+
+    >> ``f y``;
 
 Theorems
 ---------
 
 Searching for theorems
 -----------------------
+
+Theories
+---------
+Every type operator (like `list`) above is defined in some _theory_, in this
+case in `listTheory`. The fully-qualified name of the type operator is
+`list$list`. We could
 
 Simple proofs
 --------------
