@@ -1,12 +1,7 @@
-<!doctype html>
-<head>
-  <title>HOL Tutorial</title>
-  <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
-  <link rel="stylesheet" type="text/css" href="style.css">
-</head>
-<body>
-Welcome to my HOL tutorial
-===========================
+% HOL Guidebook
+
+Introduction
+-------------
 
 HOL stands for higher-order logic. HOL is also the name of the theorem prover.
 
@@ -157,6 +152,22 @@ _quotation_. Removing the special syntax entirely, we can write:
 
     >> Type [QUOTE":num list"];
 
+Types can include variables. `alpha` is bound to a type variable, which can also be written as `:'a`.
+
+    >> alpha; ``:'a``;
+
+Quotations can include values that do not need to be parsed. For example:
+
+    >> ``:^(mk_type("list",[alpha])) list``; (* list of lists of alphas *)
+
+This is syntactic sugar for:
+
+    >> Type [QUOTE":", ANTIQUOTE (mk_type("list",[alpha])), QUOTE " list"];
+
+Theories
+---------
+Every type operator (like `list`) above is
+
 Terms
 ------
 
@@ -171,5 +182,3 @@ Simple proofs
 
 Useful tactics
 ---------------
-
-</body>
