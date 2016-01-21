@@ -88,7 +88,7 @@ the REPL. For this, there are plugins for two text editors, Vim and Emacs,
 which enable script-file writing alongside an interactive HOL session. Both are
 included in your HOL installation. The Vim plugin is documented at
 `$HOLDIR/tools/vim/README` ([also here](https://github.com/HOL-Theorem-Prover/HOL/tree/master/tools/vim/README)).
-The Emacs plugin is documented [online](https://hol-theorem-prover.org/hol-mode.html).
+The Emacs plugin is documented [online](https://hol-theorem-prover.org/hol-mode.html). (TODO: update link for new website.)
 
 The idea behind these interaction plugins is to write a script file that will
 eventually be suitable for processing by `Holmake`, but to see, step-by-step in
@@ -166,32 +166,60 @@ This is syntactic sugar for:
 
 Terms
 ------
-The terms of higher-order logic include: variables, constants, abstractions,
-and combinations (sometimes called applications). Here are examples of all
-these kinds of terms, first built using term-making functions and then built
-using the term parser:
+The terms of higher-order logic include: variables, constants, abstractions, and
+combinations (sometimes called applications). I will show
+examples of all these kinds of terms, made both using term-making functions
+directly and using the term parser.
 
+#### Variables
+A variable is identified by a name and a type.
     >> val x = mk_var("x",beta);
-
-    >> val z = mk_const("0",``:num``);
-
-    >> val f = mk_abs(x,z);
-
-    >> mk_comb(f,mk_var("y",beta));
-
 
     >> val x = ``x:β``; (* or ``x:'b`` *)
 
+If you don't provide a type, HOL will invent one.
+
+    >> val y = ``y``;
+
+#### Constants
+A constant also has a name and a type.
+    >> val z = mk_const("0",``:num``);
+
     >> val z = ``0``;
+
+Unlike variables, the type of a constant is fixed.
+
+    >>+ mk_const("0",bool);
+
+So why provide a type at all? Because constants can be _polymorphic_.
+More details about polymorphism [below][polymorphism].
+
+Furthermore, unlike variable names, constant names are scoped into theories.
+More details about theories [later][theories].
+
+#### Abstractions
+An abstraction represents a function.
+It consists of a variable and a term (body).
+
+    >> val f = mk_abs(x,z);
 
     >> val f = ``λx:β. 0``; (* or ``\x:'b. 0`` *)
 
+#### Combinations
+    >> mk_comb(f,mk_var("y",beta));
+
     >> ``f y``;
+
+Polymorphism
+-------------
+
+First-order logic
+------------------
 
 Theorems
 ---------
 
-Searching for theorems
+Finding theorems
 -----------------------
 
 Evaluation
@@ -209,6 +237,12 @@ Simple proofs
 Useful tactics
 ---------------
 
+Finding documentation
+----------------------
+
+System conventions
+-------------------
+
 Standard theories
 ------------------
 
@@ -218,14 +252,29 @@ Defining constants
 Defining datatypes
 ------------------
 
-More proofs
-------------
+Induction
+----------
 
 Conversions
 ------------
 
-Writing tactics
-----------------
+The simplifier
+---------------
 
-Abbreviations and overloading
-------------------------------
+Defining relations
+-------------------
+
+The type database
+------------------
+
+Defining quotients
+-------------------
+
+Changing the parser
+--------------------
+
+Writing more tactics
+--------------------
+
+More proofs
+------------
