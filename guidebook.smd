@@ -145,9 +145,12 @@ operator and a list of arguments:
 
 Type variables can also be made by providing a name.
 
+    >> mk_vartype("'test");
+
     >> mk_vartype("'f");
 
 Type variable names, by convention, start with a single quote, unless they are a Greek letter.
+The first several letters of the (Roman) alphabet are synonymous with certain Greek letters (as demonstrated above).
 
 Every type in HOL is either a type variable or a type operator (like "list") applied to type arguments.
 Even `bool` is a type operator; it has no arguments.
@@ -272,15 +275,82 @@ Alpha-equivalence is less discriminating than equality.
     >> f1 = f3;
 
 #### Combinations
-    >> mk_comb(f,mk_var("y",beta));
+A combinations represents application of a function to an argument.
+
+    >> mk_comb(f,y');
+
+The syntax is simply juxtaposition of function with argument.
 
     >> ``f y``;
 
-Polymorphism
--------------
+The type of the argument must match the domain of the function's type.
+
+    >>+ mk_comb(f,y);
+
+Every function in HOL takes one argument, but multiple arguments can be implemented using higher-order functions by [_currying_](https://en.wikipedia.org/wiki/Currying).
+
+    >> val fxyz = ``f x y z``;
+
+    >> dest_comb fxyz;
+
+All the arguments can be stripped off at once.
+
+    >> strip_comb fxyz;
 
 First-order logic
 ------------------
+There are two canonical values of type `:bool`, namely true and false.
+In HOL they are written as `T` and `F`, and are also bound by default to ML variables.
+
+    >> T;
+
+    >> ``F`` = F;
+
+    >> type_of F;
+
+The ML function `type_of`, used above, returns the HOL type of a term.
+
+    >> type_of;
+
+The connectives of Boolean logic can be written using either ASCII or Unicode syntax.
+Here are examples using both styles.
+
+    >> ``~p``;
+
+    >> ``p /\ q``;
+
+    >> ``p ∨ q``;
+
+    >> ``x ==> y``;
+
+    >> ``x ⇔ y``;
+
+If you are using Vim, the Vim plugin (see [Interaction]) documentation explains how to type Unicode characters using digraphs.
+HOL always prints output back using Unicode, but you can turn this off if desired.
+
+    >> set_trace "Unicode" 0;
+
+    >> val tm1 = ``x <=> y``;
+
+    >> val tm2 = ``x ⇔ y``;
+
+    >> set_trace "Unicode" 1;
+
+    >> tm1;
+
+Observe that `tm2` actually contains a variable called `⇔`, which is printed with a leading `$` when Unicode is turned on to avoid conflicting with the bi-implication constant (`<=>`).
+
+    >> tm2;
+
+    >> dest_comb tm2;
+
+    >> tm2 |> dest_comb |> #1 |> dest_comb;
+
+    >> is_var (#2 it);
+
+
+Polymorphism
+-------------
 
 Theorems
 ---------
