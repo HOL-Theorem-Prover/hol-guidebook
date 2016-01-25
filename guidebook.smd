@@ -1,21 +1,27 @@
-% [HOL Guidebook](https://github.com/HOL-Theorem-Prover/hol-guidebook)
+% [HOL Guidebook][Guidebook]
 
 Introduction
 -------------
 
-HOL stands for higher-order logic. HOL is also the name of the theorem prover.
+HOL stands for higher-order logic. HOL is also the name of a theorem prover,
+the [HOL theorem prover][HOL website]. This is a guidebook for the theorem
+prover.
 
-I assume you are familiar with [functional programming][w:fp] and [higher-order logic][7].
-(If you are not, don't worry, these topics will be introduced gently and are
-easy to pick up.) The main point of this tutorial is to show you how to build
-theories in the HOL theorem prover, assuming you have an idea of what you want
-to formalise and how to prove your theorems mathematically.
+I assume you are familiar with [functional programming][w:fp] and [higher-order
+logic][7]. (If you are not, don't worry, these topics will be treated gently
+and are easy to pick up.) The main point of this tutorial is to show you how to
+build theories in the HOL theorem prover, assuming you have an idea of what you
+want to formalise and how to prove your theorems mathematically.
 
 If you have trouble with anything, there is plenty of community support
 available including mailing lists and online chat. See the [HOL website][]
 for details.
 
+For support on or contributions to this guidebook itself, see its repository on
+[GitHub][Guidebook].
+
 [HOL website]: https://hol-theorem-prover.org
+[Guidebook]: https://github.com/HOL-Theorem-Prover/hol-guidebook
 [7]: http://www.cas.mcmaster.ca/sqrl/papers/SQRLreport18_rev2.pdf
 [w:fp]: https://en.wikipedia.org/wiki/Functional_programming
 
@@ -121,8 +127,8 @@ For example, to see that this theorem has no hypotheses, try:
 But of course, if you want to add anything to the theory you produce, you
 should write it in the script file.
 
-Types and Parsing
-------------------
+Types
+------
 The syntax of higher-order logic includes types and terms. These are two of the
 main datatypes implemented by HOL, over and above what is provided by ML. Here
 is a type:
@@ -137,7 +143,18 @@ operator and a list of arguments:
 
     >> mk_type("list",[bool]); (* the type of a list of Booleans *)
 
-But it is often more convenient to call the _type parser_ rather than `mk_type` directly.
+Type variables can also be made by providing a name.
+
+    >> mk_vartype("'f");
+
+Type variable names, by convention, start with a single quote, unless they are a Greek letter.
+
+Every type in HOL is either a type variable or a type operator (like "list") applied to type arguments.
+Even `bool` is a type operator; it has no arguments.
+
+Parsing
+--------
+It is often more convenient to call the _type parser_ rather than `mk_type` directly.
 
     >> ``:num list``;
 
@@ -152,24 +169,29 @@ _quotation_. Removing the special syntax entirely, we can write:
 
     >> Type [QUOTE":num list"];
 
+The string passed to the type parser should start with a colon as above.
+
 Types can include variables. `alpha` is bound to a type variable, which can also be written as `:'a`.
 
     >> alpha; ``:'a``;
 
 Quotations can include values that do not need to be parsed. For example:
 
+    >> val num = ``:num``;
+    >> ``:^num list``;
+
     >> ``:^(mk_type("list",[alpha])) list``; (* list of lists of alphas *)
 
-This is syntactic sugar for:
+The last input expression is syntactic sugar for:
 
     >> Type [QUOTE":", ANTIQUOTE (mk_type("list",[alpha])), QUOTE " list"];
 
 Terms
 ------
 The terms of higher-order logic include: variables, constants, abstractions, and
-combinations (sometimes called applications). I will show
-examples of all these kinds of terms, made both using term-making functions
-directly and using the term parser.
+combinations (sometimes called applications).
+I will show examples of all these kinds of terms, made both using term-making
+functions directly and using the term parser.
 
 #### Variables
 A variable is identified by a name and a type.
@@ -181,8 +203,15 @@ If you don't provide a type, HOL will invent one.
 
     >> val y = ``y``;
 
+Variables are equal if and only if both their name and type match.
+
+    >> y = ``y:'b``;
+
+    >> y = mk_var("y",alpha);
+
 #### Constants
 A constant also has a name and a type.
+
     >> val z = mk_const("0",``:num``);
 
     >> val z = ``0``;
@@ -196,6 +225,9 @@ More details about polymorphism [below][polymorphism].
 
 Furthermore, unlike variable names, constant names are scoped into theories.
 More details about theories [later][theories].
+The full name of a constant can be recovered with `dest_thy_const`.
+
+    >> dest_thy_const z;
 
 #### Abstractions
 An abstraction represents a function.
@@ -204,6 +236,40 @@ It consists of a variable and a term (body).
     >> val f = mk_abs(x,z);
 
     >> val f = ``λx:β. 0``; (* or ``\x:'b. 0`` *)
+
+    >> dest_abs f;
+
+Terms can be tested for _alpha-equivalence_, which means equality up to a renaming of bound variables, using `aconv`.
+
+    >> aconv f (mk_abs(y,z));
+
+    >> val y' = mk_var("y",beta);
+
+    >> aconv f (mk_abs(y',z));
+
+To see why the first version is false, recall the type of `y` declared above.
+
+    >> dest_var y;
+
+A more interesting example:
+
+    >> val f1 = ``λx y. ¬x``;
+
+    >> val f2 = ``λy x. ¬x``;
+
+    >> val f3 = ``λy x. ¬y``;
+
+    >> aconv f1 f2;
+    >> aconv f1 f3;
+
+The syntax `λx y. b` is shorthand for `λx. (λy. b)`.
+
+In `f1`, the type of `y` is invented, but the type of `x` is fixed (as `:num`) by _type inference_.
+The Boolean negation operator (`¬`) takes a Boolean argument, so HOL infers that its argument must have type `:bool`.
+
+Alpha-equivalence is less discriminating than equality.
+
+    >> f1 = f3;
 
 #### Combinations
     >> mk_comb(f,mk_var("y",beta));
