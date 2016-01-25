@@ -297,8 +297,8 @@ All the arguments can be stripped off at once.
 
     >> strip_comb fxyz;
 
-First-order logic
-------------------
+Boolean connectives
+--------------------
 There are two canonical values of type `:bool`, namely true and false.
 In HOL they are written as `T` and `F`, and are also bound by default to ML variables.
 
@@ -325,6 +325,9 @@ Here are examples using both styles.
 
     >> ``x ⇔ y``;
 
+Unicode
+--------
+
 If you are using Vim, the Vim plugin (see [Interaction]) documentation explains how to type Unicode characters using digraphs.
 HOL always prints output back using Unicode, but you can turn this off if desired.
 
@@ -348,6 +351,19 @@ Observe that `tm2` actually contains a variable called `⇔`, which is printed w
 
     >> is_var (#2 it);
 
+The examples above also introduce a few ML library functions we have not seen before.
+The `|>` combinator simply does function application. `tm2 |> dest_comb` is the same as `dest_comb tm2`.
+Its utility in adding readabilty (and avoiding parentheses) when applying many functions can be seen above.
+The `#1` and `#2` functions are record selectors for elements of tuples in ML.
+In HOL they they are also defined as `fst` and `snd`.
+
+    >> fst (0,1);
+
+    >> (0,1,2) |> #3;
+
+
+First-order logic
+------------------
 
 Polymorphism
 -------------
