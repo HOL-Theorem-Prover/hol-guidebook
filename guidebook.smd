@@ -143,11 +143,15 @@ operator and a list of arguments:
 
     >> mk_type("list",[bool]); (* the type of a list of Booleans *)
 
+    >> dest_type it;
+
 Type variables can also be made by providing a name.
 
     >> mk_vartype("'test");
 
     >> mk_vartype("'f");
+
+    >> dest_vartype it;
 
 Type variable names, by convention, start with a single quote, unless they are a Greek letter.
 The first several letters of the (Roman) alphabet are synonymous with certain Greek letters (as demonstrated above).
@@ -155,22 +159,37 @@ The first several letters of the (Roman) alphabet are synonymous with certain Gr
 Every type in HOL is either a type variable or a type operator (like "list") applied to type arguments.
 Even `bool` is a type operator; it has no arguments.
 
+Logically, there are only two primitive type operators: `bool`, and `fun`, the type of functions.
+Others, like `list`, are defined types, but they are already defined by default.
+Function types can be manipulated as follows.
+
+    >> val ty = bool --> alpha;
+
+    >> dom_rng ty;
+
+    >> dest_type ty;
+
 Parsing
 --------
 It is often more convenient to call the _type parser_ rather than `mk_type` directly.
+Compare these alternatives for building a certain type.
 
-    >> ``:num list``;
+    >> mk_type("fun",[mk_type("list",[mk_type("num",[])]),mk_type("num",[])]);
+
+    >> let val num = mk_type("num",[]) in mk_type("list",[num]) --> num end;
+
+    >> ``:num list -> num``;
 
 The backticks (\`) above are special syntax provided by HOL for calling the
 type parser. The underlying parser function is called `Type`. We can call the
 parser more directly:
 
-    >> Type `:num list`;
+    >> Type `:num list -> num`;
 
 The single backticks represent another special syntax, this time for a
 _quotation_. Removing the special syntax entirely, we can write:
 
-    >> Type [QUOTE":num list"];
+    >> Type [QUOTE":num list -> num"];
 
 The string passed to the type parser should start with a colon as above.
 
@@ -180,8 +199,7 @@ Types can include variables. `alpha` is bound to a type variable, which can also
 
 Quotations can include values that do not need to be parsed. For example:
 
-    >> val num = ``:num``;
-    >> ``:^num list``;
+    >> ``:^alpha list``;
 
     >> ``:^(mk_type("list",[alpha])) list``; (* list of lists of alphas *)
 
@@ -198,6 +216,7 @@ functions directly and using the term parser.
 
 #### Variables
 A variable is identified by a name and a type.
+
     >> val x = mk_var("x",beta);
 
     >> val x = ``x:β``; (* or ``x:'b`` *)
@@ -275,7 +294,7 @@ Alpha-equivalence is less discriminating than equality.
     >> f1 = f3;
 
 #### Combinations
-A combinations represents application of a function to an argument.
+A combination represents application of a function to an argument.
 
     >> mk_comb(f,y');
 
@@ -296,6 +315,18 @@ Every function in HOL takes one argument, but multiple arguments can be implemen
 All the arguments can be stripped off at once.
 
     >> strip_comb fxyz;
+
+The counterpart for creating multiple applications at once is `list_mk_comb`.
+
+    >> val tm = list_mk_comb (f3,[``x:bool``,y]);
+
+There is shorthand for extracting either of the results of `dest_comb`:
+
+    >> rator tm;
+
+    >> rand tm;
+
+These functions stand for "operator" and "operand" respectively.
 
 Boolean connectives
 --------------------
@@ -324,6 +355,19 @@ Here are examples using both styles.
     >> ``x ==> y``;
 
     >> ``x ⇔ y``;
+
+In HOL, unlike in propositional logic, these connectives have no special syntactic status: they are simply higher-order functions.
+
+    >> val imp = ``x ⇒ y``;
+
+    >> rator imp;
+
+    >> type_of it;
+
+    >> type_of``$~``;
+
+As you can see, when writing partial applications of the connectives, their ASCII names must be used.
+Furthermore leading dollar signs must be used, since the default grammar used by the term parser has rules for these connectives expecting them to be fully applied.
 
 Unicode
 --------
@@ -361,12 +405,50 @@ In HOL they they are also defined as `fst` and `snd`.
 
     >> (0,1,2) |> #3;
 
+Equality
+---------
+One important constant in HOL is the equality function, which makes equations.
 
-First-order logic
-------------------
+    >> val eqn = mk_eq(f1,f3);
+
+    >> lhs eqn;
+
+    >> rhs eqn;
+
+    >> dest_eq eqn;
+
+In fact, we have already seen an instance of equality in the section on Boolean connectives.
+On Booleans, equality is the same as bi-implication.
+
+    >> val iff = mk_eq(``p:bool``,``q:bool``);
+
+However, equality can be applied at any type.
+In the first equation above, we find that equality is comparing higher-order functions.
+
+    >> rator eqn;
+
+    >> rator it;
+
+    >> eqn |> rator |> rator |> type_of;
+
+Whereas in the second equation:
+
+    >> iff |> rator |> rator |> type_of;
+
+In general, we have the following _polymorphic_ type for equality.
+
+    >> type_of``$=``;
 
 Polymorphism
 -------------
+Many constants are polymorphic.
+A polymorphic constant has a most general type that includes type variables.
+Those variables can be _instantiated_ to form an type instance of the constant.
+
+To find the most general type of a constant,
+
+First-order logic
+------------------
 
 Theorems
 ---------
