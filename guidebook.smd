@@ -94,7 +94,7 @@ the REPL. For this, there are plugins for two text editors, Vim and Emacs,
 which enable script-file writing alongside an interactive HOL session. Both are
 included in your HOL installation. The Vim plugin is documented at
 `$HOLDIR/tools/vim/README` ([also here](https://github.com/HOL-Theorem-Prover/HOL/tree/master/tools/vim/README)).
-The Emacs plugin is documented [online](https://hol-theorem-prover.org/hol-mode.html). (TODO: update link for new website.)
+The Emacs plugin is documented [online](https://hol-theorem-prover.org/hol-mode.html).
 
 The idea behind these interaction plugins is to write a script file that will
 eventually be suitable for processing by `Holmake`, but to see, step-by-step in
