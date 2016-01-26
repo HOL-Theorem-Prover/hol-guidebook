@@ -5,5 +5,5 @@ guidebook.md: guidebook.smd $(HOLDIR)/Manual/Tools/polyscripter
 	$(HOLDIR)/Manual/Tools/polyscripter < $< > $@
 .PHONY: publish
 publish: index.html style.css
-	rsync index.html hol-theorem-prover.org:/srv/hol-webpages/topublish/guidebook/
-	rsync style.css hol-theorem-prover.org:/srv/hol-webpages/topublish/guidebook/
+	rsync index.html hol-theorem-prover.org:/srv/hol-webpages/new-look/guidebook/
+	rsync style.css hol-theorem-prover.org:/srv/hol-webpages/new-look/guidebook/
