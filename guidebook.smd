@@ -43,7 +43,7 @@ Now you can run `hol` at the command line. You will be greeted with a welcome
 message, and prompted with a read-eval-print loop (REPL). This is in fact the
 REPL for the underlying ML system.
 
-HOL is just a library for theorem proving in Standard ML (abbreviated as ML).
+HOL is just a library for theorem proving in <a href="http://sml-family.org/">Standard ML</a> (abbreviated as ML).
 Interacting with HOL, therefore, can be seen as programming in ML. If you don't
 use any of the HOL-specific parts, you just have Standard ML:
 
@@ -156,7 +156,7 @@ Type variables can also be made by providing a name.
 Type variable names, by convention, start with a single quote, unless they are a Greek letter.
 The first several letters of the (Roman) alphabet are synonymous with certain Greek letters (as demonstrated above).
 
-Every type in HOL is either a type variable or a type operator (like "list") applied to type arguments.
+Every type in HOL is either a type variable or a type operator (like `list`) applied to type arguments.
 Even `bool` is a type operator; it has no arguments.
 
 Logically, there are only two primitive type operators: `bool`, and `fun`, the type of functions.
@@ -196,6 +196,8 @@ The string passed to the type parser should start with a colon as above.
 Types can include variables. `alpha` is bound to a type variable, which can also be written as `:'a`.
 
     >> alpha; ``:'a``;
+
+(In the example above, two results are printed because two declarations were provided.)
 
 Quotations can include values that do not need to be parsed. For example:
 
@@ -273,7 +275,8 @@ To see why the first version is false, recall the type of `y` declared above.
 
     >> dest_var y;
 
-A more interesting example:
+A more interesting example follows.
+The syntax `λx y. b` is shorthand for `λx. (λy. b)`.
 
     >> val f1 = ``λx y. ¬x``;
 
@@ -283,8 +286,6 @@ A more interesting example:
 
     >> aconv f1 f2;
     >> aconv f1 f3;
-
-The syntax `λx y. b` is shorthand for `λx. (λy. b)`.
 
 In `f1`, the type of `y` is invented, but the type of `x` is fixed (as `:num`) by _type inference_.
 The Boolean negation operator (`¬`) takes a Boolean argument, so HOL infers that its argument must have type `:bool`.
@@ -369,6 +370,28 @@ In HOL, unlike in propositional logic, these connectives have no special syntact
 As you can see, when writing partial applications of the connectives, their ASCII names must be used.
 Furthermore leading dollar signs must be used, since the default grammar used by the term parser has rules for these connectives expecting them to be fully applied.
 
+Some library functions
+-----------------------
+HOL comes with a small selection of pre-defined ML functions that are generally useful (and not specific to theorem proving).
+
+The `#1` and `#2` functions are record selectors for elements of tuples in ML.
+In HOL they they are also defined as `fst` and `snd`.
+
+    >> fst (0,1);
+
+    >> #2 (0,1,2)
+
+The `el` function extracts elements from a list.
+It is the same as `List.nth` in ML, but indexes from `1` rather than `0`.
+
+    >> el 2 [1,2,3];
+
+The `|>` combinator does function application.
+Thus, `tm2 |> dest_comb` is the same as `dest_comb tm2`.
+Its utility is in adding readabilty (and avoiding parentheses) when applying many functions in a row.
+
+    >> ("hi",1,"bye") |> #3 |> String.explode |> el 2;
+
 Unicode
 --------
 
@@ -395,19 +418,11 @@ Observe that `tm2` actually contains a variable called `⇔`, which is printed w
 
     >> is_var (#2 it);
 
-The examples above also introduce a few ML library functions we have not seen before.
-The `|>` combinator simply does function application. `tm2 |> dest_comb` is the same as `dest_comb tm2`.
-Its utility in adding readabilty (and avoiding parentheses) when applying many functions can be seen above.
-The `#1` and `#2` functions are record selectors for elements of tuples in ML.
-In HOL they they are also defined as `fst` and `snd`.
-
-    >> fst (0,1);
-
-    >> (0,1,2) |> #3;
-
 Equality
 ---------
 One important constant in HOL is the equality function, which makes equations.
+Recall `f1` and `f3` from the section on [Abstractions].
+We can make an equation between them:
 
     >> val eqn = mk_eq(f1,f3);
 
@@ -417,7 +432,7 @@ One important constant in HOL is the equality function, which makes equations.
 
     >> dest_eq eqn;
 
-In fact, we have already seen an instance of equality in the section on Boolean connectives.
+In fact, we have already seen an instance of equality in the section on [Boolean connectives].
 On Booleans, equality is the same as bi-implication.
 
     >> val iff = mk_eq(``p:bool``,``q:bool``);
@@ -443,12 +458,51 @@ Polymorphism
 -------------
 Many constants are polymorphic.
 A polymorphic constant has a most general type that includes type variables.
-Those variables can be _instantiated_ to form an type instance of the constant.
+Those variables can be _instantiated_ to form a type instance of the constant.
 
-To find the most general type of a constant,
+One example is the `MAP` constant on lists.
+
+    >> type_of``MAP``;
+
+    >> val tm = ``MAP f [T;T;F]``;
+
+    >> strip_comb tm |> #1;
+
+    >> type_of it;
+
+The instance of `MAP` obtained from `tm` is more specialised because it was
+applied to a list of Booleans.
+
+To find the most general type of a constant, one can parse the constant and HOL
+will invent type variables where it can. A more principled method is to use
+`prim_mk_const`, which makes a constant without taking a type as an argument
+(and instead returns the instance of the constant with most general type), but
+this requires the full name of the constant (as described later under
+[Theories]).
 
 First-order logic
 ------------------
+To the [Boolean connectives] of propositional logic, first-order logic adds quantifiers.
+In particular, there is a universal and an existential quantifier.
+Here are some examples.
+
+    >> val q = ``q:bool``;
+    >> mk_forall(q,``^q ==> ^q``);
+
+    >> ``!y. ~y ==> x``;
+
+    >> ``?y. x ==> ~y``;
+
+Using the term-building functions directly, one must be careful to ensure all variables have the desired types.
+
+    >> mk_exists(``q``,``q ==> q``);
+
+Here, the quanified variable, `q'`, is not the same as the variable `q` in the body of the existential.
+It has a different type, namely `:'a`, whereas `q` must have type `bool`.
+This happened because the bound `q'` was parsed in a separate context from that constraining the type of `q` to be `:bool`.
+
+
+The quantifiers are polymorphic: they can be used at every type.
 
 Theorems
 ---------
