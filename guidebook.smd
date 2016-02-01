@@ -1,4 +1,7 @@
 % [HOL Guidebook][Guidebook]
+<!--
+>>__ val () = elision_string1 := " (* output elided *)";
+-->
 
 Introduction
 -------------
@@ -392,6 +395,19 @@ Its utility is in adding readabilty (and avoiding parentheses) when applying man
 
     >> ("hi",1,"bye") |> #3 |> String.explode |> el 2;
 
+Traces
+-------
+In HOL, there is a global table of configuration options called _traces_, which affect the interactive system in various ways.
+The list of traces can be found by calling the `traces` function:
+
+    >>_ traces();
+
+Each trace has a name (a string) and a value (an integer). Usually `0` means
+off, and `1` means on. For traces with more values, higher numbers
+usually mean more of the behaviour.
+
+Traces can be set with `set_trace`.
+
 Unicode
 --------
 
@@ -479,6 +495,25 @@ will invent type variables where it can. A more principled method is to use
 (and instead returns the instance of the constant with most general type), but
 this requires the full name of the constant (as described later under
 [Theories]).
+
+Any term containing can be instantiated with a type substitution, which maps
+type variables to types. In the following examples, let us pretty-print terms
+with types on.
+
+    >> set_trace "types" 1;
+
+    >> val tm = ``MAP f``;
+
+    >> inst [alpha |-> bool] tm;
+
+    >> inst [alpha |-> bool, beta |-> alpha] tm;
+
+The `inst` function performs a simultaneous substitution of types for type
+variables. The `|->` operator constructs a binding, and a substitution is just
+a list of these bindings.
+
+Substitution
+-------------
 
 First-order logic
 ------------------
