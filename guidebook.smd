@@ -412,7 +412,7 @@ Unicode
 --------
 
 If you are using Vim, the Vim plugin (see [Interaction]) documentation explains how to type Unicode characters using digraphs.
-HOL always prints output back using Unicode, but you can turn this off if desired.
+HOL prints output back using Unicode, but you can turn this off if desired.
 
     >> set_trace "Unicode" 0;
 
@@ -512,8 +512,42 @@ The `inst` function performs a simultaneous substitution of types for type
 variables. The `|->` operator constructs a binding, and a substitution is just
 a list of these bindings.
 
+    >> set_trace "types" 0;
+
 Substitution
 -------------
+The `subst` function performs simultaneous substitution of terms for term variables.
+Term substitutions are created using the same `|->` operator as used for type substitutions.
+For an example, recall the term we made earlier, `imp`, which contains two free variables.
+
+    >> imp;
+
+    >> val s = [``x:bool`` |-> F, ``y:bool`` |-> ``x = y``];
+
+    >> subst s imp;
+
+Substitution only works on free variables. Recall `tm3`, which has none.
+
+    >> f3;
+
+The same substitution does nothing.
+
+    >> subst s f3;
+
+However, if we add a free occurrence of `y`, it will be substituted.
+
+    >> val f3y = mk_comb(f3,``y:bool``);
+
+    >> subst s f3y;
+
+What happens if we do the same in the body of the abstraction?
+
+    >> val (_,f3b) = dest_abs f3;
+
+    >> subst s f3b;
+
+Now the bound `x` got renamed to `x'`, since a different `x` appears in the body after the substitution.
+(In fact, these variables don't even have the same type.)
 
 First-order logic
 ------------------
