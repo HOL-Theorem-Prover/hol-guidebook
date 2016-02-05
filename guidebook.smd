@@ -570,8 +570,30 @@ Here, the quanified variable, `q'`, is not the same as the variable `q` in the b
 It has a different type, namely `:'a`, whereas `q` must have type `bool`.
 This happened because the bound `q'` was parsed in a separate context from that constraining the type of `q` to be `:bool`.
 
+There is shorthand syntax for nesting the same quantifier multiple times, which HOL will print back by default.
 
-The quantifiers are polymorphic: they can be used at every type.
+    >> ``!x. !y. !z. x = y``;
+
+The corresponding term-manipulation functions are illustrated below.
+
+    >> strip_forall it;
+
+    >> list_mk_exists([x,q],q);
+
+In HOL, the quantifiers are in fact simply higher-order functions.
+
+    >> val tm = ``∀x. ∃y. x = y``;
+
+    >> val (x,ex) = dest_forall tm;
+
+    >> dest_comb it;
+
+`dest_forall` splits the quantifier into the bound variable and the body, but `dest_comb`, used on the second quantifier, reveals that `ex` is an application of `$?` to a lambda term.
+
+    >> type_of ``$!``;
+
+A predicate is a function with codomain `:bool`.
+Quantifiers are predicates on predicates.
 
 Theorems
 ---------
