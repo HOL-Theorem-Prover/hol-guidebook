@@ -172,6 +172,12 @@ Function types can be manipulated as follows.
 
     >> dest_type ty;
 
+If you try to destruct a type operator as if it were a variable, HOL will raise an exception.
+
+    >> is_vartype bool;
+
+    >>+ dest_vartype bool;
+
 Parsing
 --------
 It is often more convenient to call the _type parser_ rather than `mk_type` directly.
@@ -310,6 +316,14 @@ The type of the argument must match the domain of the function's type.
 
     >>+ mk_comb(f,y);
 
+To understand why this fails, recall that `f` requires an argument of type `β`, but `y` has type `α`.
+
+    >> val (v,b) = dest_abs f;
+    >> dest_var v;
+
+When \``f y`\` was given to the term parser, it invented new types to ensure the application was type-correct.
+In fact, the HOL variables in that quotation are unrelated to the ML variables `f` and `y`.
+
 Every function in HOL takes one argument, but multiple arguments can be implemented using higher-order functions by [_currying_](https://en.wikipedia.org/wiki/Currying).
 
     >> val fxyz = ``f x y z``;
@@ -331,6 +345,21 @@ There is shorthand for extracting either of the results of `dest_comb`:
     >> rand tm;
 
 These functions stand for "operator" and "operand" respectively.
+
+The lambda view
+---------------
+
+Trying to destruct a variable as an abstraction, or other such mismatches, will raise exceptions.
+
+    >>+ dest_abs ``f``;
+
+However, an arbitrary term can be destructed using `dest_term`.
+
+    >> dest_term ``f``;
+
+    >> dest_term ``λx. x``;
+
+The other `lambda` constructors are `CONST` and `COMB`.
 
 Boolean connectives
 --------------------
