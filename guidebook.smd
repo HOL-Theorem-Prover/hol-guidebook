@@ -626,6 +626,56 @@ Quantifiers are predicates on predicates.
 
 Theorems
 ---------
+The third (and final) datatype HOL provides on top of ML, after types and terms, is `thm`, the type of proven theorems.
+A very simple theorem is bound by default to the ML variable `TRUTH`.
+
+    >> TRUTH;
+
+Every theorem contains a set of hypotheses and a conclusion. All these are terms of type `:bool`.
+
+    >> hypset TRUTH;
+
+    >> concl TRUTH;
+
+`hyp` returns the hypotheses as a list, which is often less efficient when writing automation, but easier to deal with interactively.
+
+    >> hyp TRUTH;
+
+Hypotheses are not printed by default, but there is a trace to show them.
+
+    >> set_trace "assumptions" 1;
+
+    >> TRUTH;
+
+A key feature of HOL (and all [LCF-style] theorem provers) is that values of type `thm` can only be produced by a small number of trusted functions in a trusted module.
+In HOL, the relevant structure is `Thm`, and the functions it exports are available by default.
+(See [Finding documentation] for how to inspect the contents of such structures.)
+Any other theorem-producing functions must ultimately build their theorems via calls to the trusted functions, thereby ensuring that a proof (in the form of a sequence of calls to kernel functions) exists for every theorem.
+There are many theorem-producing functions (sometimes called "derived rules") that build on the ones in `Thm`.
+
+[LCF-style]: https://en.wikipedia.org/wiki/Logic_for_Computable_Functions
+
+A simple kernel function is `ASSUME`, which creates a theorem with an assumption.
+
+    >> val th = ASSUME ``x ≠ y``;
+
+The `DISCH` rule can move an assumption into the conclusion.
+
+    >> DISCH ``x ≠ y`` th;
+
+It does not have to be in the assumptions in the first place.
+
+    >> DISCH ``y ≠ x`` th;
+
+To pull the antecedent of an implication into the assumptions, use `UNDISCH`.
+
+    >> UNDISCH it;
+
+To discharge all assumptions, use `DISCH_ALL`.
+
+    >> DISCH_ALL it;
+
+This is useful to avoid having to write which assumption you want in theorems with only one anyway.
 
 Finding theorems
 -----------------------
@@ -638,6 +688,10 @@ Theories
 Every type operator (like `list`) above is defined in some _theory_, in this
 case in `listTheory`. The fully-qualified name of the type operator is
 `list$list`. We could
+
+Tags
+-----
+Theorems also contain a set of tags indicating how they were produced.
 
 Simple proofs
 --------------
