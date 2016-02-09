@@ -677,17 +677,72 @@ To discharge all assumptions, use `DISCH_ALL`.
 
 This is useful to avoid having to write which assumption you want in theorems with only one anyway.
 
+Theories
+---------
+In the HOL theorem prover, type operators, constants, and stored theorems are organised into _theories_.
+Every type operator (such as `list`) is defined in some theory; in the case of `list`, it is `listTheory`.
+The fully-qualified name of the type operator is `list$list`.
+
+By convention, a theory `foo` is stored in an ML structure called `fooTheory` which is produced by building `fooScript.sml`.
+
+To find the fully-qualified name of a type operator or constant, the following functions can be used.
+
+    >> dest_thy_type ``:'a list``;
+
+(Since `dest_thy_type` takes a type, a type operator must be applied to arguments first.
+These are also returned, as with `dest_type`.)
+
+    >> dest_thy_const T;
+
+    >> dest_thy_type ``:num``;
+
+Every interactive session has a "current theory", which is where any new logical content (constants, theorems/axioms) will be stored.
+By default, this will be "scratch".
+
+    >> current_theory();
+
+To start working in a new theory, use `new_theory`.
+
+    >> new_theory "test";
+
+    >> current_theory();
+
+Only one theory can be current at a time, so the call to `new_theory` first exported the theory "scratch".
+Generally, `new_theory` should not be used interactively except when editing a [script file][script files]: then, it should instead appear near the start of the file to avoid adding any content to a `scratchTheory`.
+To save the current theory to disk, use `export_theory`; this should generally only happen at the bottom of a script file.
+
+Every theory has a series of _ancestors_, which can be found as follows.
+
+    >> ancestry "-";
+
+The argument to `ancestry` is the name of a theory, with "-" being interpreted as the current theory.
+One of the earliest theories is `boolTheory`.
+
+    >> ancestry "bool";
+
+The _theory hierarchy_ is the tree of theories organised by ancestry.
+One theory depends on another (and therefore includes the other amongst its ancestors) if it makes use of that theory's types, constants, or theorems.
+The root of the hierarchy is `minTheory`, which contains some primitive types and constants.
+
+The contents of a theory can be seen as follows.
+
+    >> types "min";
+
+    >> constants "min";
+
+    >> theorems "min";
+
+    >> axioms "min";
+
+Names in the theory hierarchy must be unique.
+
+    >>+ new_theory "bool";
+
 Finding theorems
 -----------------------
 
 Evaluation
 -----------
-
-Theories
----------
-Every type operator (like `list`) above is defined in some _theory_, in this
-case in `listTheory`. The fully-qualified name of the type operator is
-`list$list`. We could
 
 Tags
 -----
@@ -710,6 +765,19 @@ Standard theories
 
 Defining constants
 ------------------
+
+Overloading
+------------
+
+To parse a fully-qualified name, use a `$` symbol.
+
+    >> ``bool$T``;
+
+This is useful when the bare constant name (i.e., `T` in this case) is overloaded and might refer to more than one constant.
+The constant `0` often falls into this category, since it is overloaded at different numeric types.
+
+    >> dest_thy_const ``0``;
+
 
 Defining datatypes
 ------------------
