@@ -633,11 +633,13 @@ A very simple theorem is bound by default to the ML variable `TRUTH`.
 
 Every theorem contains a set of hypotheses and a conclusion. All these are terms of type `:bool`.
 
+    >> dest_thm TRUTH;
+
     >> hypset TRUTH;
 
     >> concl TRUTH;
 
-`hyp` returns the hypotheses as a list, which is often less efficient when writing automation, but easier to deal with interactively.
+`hyp`, like `dest_thm`, returns the hypotheses as a list, which is often less efficient when writing automation, but easier to deal with interactively.
 
     >> hyp TRUTH;
 
@@ -708,10 +710,10 @@ To start working in a new theory, use `new_theory`.
     >> current_theory();
 
 Only one theory can be current at a time, so the call to `new_theory` first exported the theory "scratch".
-Generally, `new_theory` should not be used interactively except when editing a [script file][script files]: then, it should instead appear near the start of the file to avoid adding any content to a `scratchTheory`.
+Generally, `new_theory` should not be used interactively except when editing a [script file][script files]: then, it should appear near the start of the file to avoid adding any content to a `scratchTheory`.
 To save the current theory to disk, use `export_theory`; this should generally only happen at the bottom of a script file.
 
-Every theory has a series of _ancestors_, which can be found as follows.
+Every theory has a series of _ancestors_, which can be found (in a meaningless order) as follows.
 
     >> ancestry "-";
 
@@ -740,6 +742,36 @@ Names in the theory hierarchy must be unique.
 
 Finding theorems
 -----------------------
+The contents of the current theory hierarchy are stored in a database and can be searched.
+Stored theorems are stored with a name, and can be searched for by name as follows.
+
+    >> DB.find"skolem";
+
+    >> DB.find"Tru";
+
+The search is case-insensitive.
+The output format includes the theory, theorem name, and the theorem itself.
+Let us turn off the printing of hypotheses for now.
+
+    >> set_trace "assumptions" 0;
+
+One can also search again within the results.
+
+    >> DB.find_in "add" (DB.find "zero");
+
+The data are printed more nicely by `print_find`, which prints the data list as follows.
+
+~~~~
+>>_ val s = DB.data_list_to_string it;
+
+>>__ val s = Substring.string(Substring.dropl(equal #"\n")(Substring.full s))
+
+>> print s;
+~~~~
+
+Theorems can also be searched for by pattern matching on their conclusion.
+
+    >> DB.apropos_in ``_ ++ _ = _`` (DB.apropos ``[x]``);
 
 Evaluation
 -----------
