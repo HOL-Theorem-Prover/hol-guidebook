@@ -764,9 +764,8 @@ The data are printed more nicely by `print_find`, which prints the data list as 
 ~~~~
 >>_ val s = DB.data_list_to_string it;
 
->>__ val s = Substring.string(Substring.dropl(equal #"\n")(Substring.full s))
-
->> print s;
+>>__ val s = Substring.string(Substring.triml 2 (Substring.full s))
+>> say s;
 ~~~~
 
 Theorems can also be searched for by pattern matching on their conclusion.
