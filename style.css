@@ -1,8 +1,8 @@
 #TOC {
    width: 250px; /* Takes place in body right padding */
    position: absolute;
-   top: 2em;
-   right: 2em
+   top: 2rem;
+   right: 2rem
 }
 #TOC ul { list-style-type: none }
 body {
@@ -11,13 +11,43 @@ body {
    max-width: 800px;
    min-width: 450px;
    padding-right: 270px; /* Rooms for #TOC and a bit more */
-   margin-top: 3em;
+   margin-top: 2.62rem;
    margin-left: auto;
    margin-right: auto
 }
-h1 { color: #1133cc }
-h2 { color: #3355aa }
+h1 { 
+   color: #1133cc 
+   font-size: 2.62rem;
+}
+h2 {
+   color: #3355aa;
+   font-size: 1.62rem;
+   margin-top: 2.62rem;
+   border-top: 1px dotted;
+   padding-top: 0.62rem;
+}
+h3 {
+   color: #3355aa;
+   font-family: serif;
+   font-size: 1.62rem;
+   font-style: italic;
+}
 a { text-decoration: none }
 a:hover { text-decoration: underline }
 a:link { color: #2244ee }
 a:visited { color: #8866dd }
+pre {
+   margin-left: 1.61rem;
+   background: #FFFFC2;
+   padding: 1em;
+   border-radius: 0.62rem;
+   border: 1px solid #EDE275;
+   overflow-x: auto;
+   line-height: 1.62;
+}
+code {
+   white-space: pre;
+   color: #800517;
+   font-size: 106%;
+   font-weight: bold;
+}
