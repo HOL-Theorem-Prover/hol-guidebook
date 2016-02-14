@@ -296,7 +296,7 @@ The syntax `λx y. b` is shorthand for `λx. (λy. b)`.
     >> aconv f1 f2;
     >> aconv f1 f3;
 
-In `f1`, the type of `y` is invented, but the type of `x` is fixed (as `:num`) by _type inference_.
+In `f1`, the type of `y` is invented, but the type of `x` is fixed (as `:bool`) by _type inference_.
 The Boolean negation operator (`¬`) takes a Boolean argument, so HOL infers that its argument must have type `:bool`.
 
 Alpha-equivalence is less discriminating than equality.
