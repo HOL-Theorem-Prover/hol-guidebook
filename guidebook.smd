@@ -768,9 +768,12 @@ The data are printed more nicely by `print_find`, which prints the data list as 
 >> say s;
 ~~~~
 
-Theorems can also be searched for by pattern matching on their conclusion.
+Theorems can also be searched for by matching on their conclusion.
 
     >> DB.apropos_in ``_ ++ _ = _`` (DB.apropos ``[x]``);
+
+Underscores are treated specially by the parser; in particular, each underscore is parsed as a variable with a distinct name from the other underscores.
+Matching allows substitution of any variable by any term (of the correct type), so the treatment of underscores enables their convenient use as wildcards in terms to be matched.
 
 Evaluation
 -----------
