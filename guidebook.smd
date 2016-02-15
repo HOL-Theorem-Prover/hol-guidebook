@@ -780,7 +780,12 @@ Evaluation
 
 Tags
 -----
-Theorems also contain a set of tags indicating how they were produced.
+Theorems also contain a set of tags indicating how they were produced. These tags propagates through
+uses in inference applications (eg. if a theorem has a tag, then a theorem derived from the former
+will inherits this tag). These tags are especially useful with axioms in case there is a suspiscion
+the axiom may be unsound (ex. the axiom is taken for correct while not proven, or the axiom comes from
+an “oracle”, or the axiom comes from an external prover however does not come with an HOL proof HOL4
+could validates).
 
 Simple proofs
 --------------
