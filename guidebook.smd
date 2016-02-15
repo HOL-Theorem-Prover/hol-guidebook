@@ -525,10 +525,10 @@ will invent type variables where it can. A more principled method is to use
 this requires the full name of the constant (as described later under
 [Theories]).
 
-Any term containing type variables can be instantiated with a type substitution, which maps
-type variables to types. In the following examples, let us pretty-print terms
-with types on.
-
+Any term can be instantiated with a type substitution, which maps type
+variables to types. In the following examples, let us pretty-print terms with
+types on.
+ 
     >> set_trace "types" 1;
 
     >> val tm = ``MAP f``;
