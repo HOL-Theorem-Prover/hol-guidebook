@@ -11,6 +11,7 @@ Pull requests welcome.
 Authors
 --------
 Ramana Kumar
+Yannick Duchêne
 
 Copyright License
 ------------------
