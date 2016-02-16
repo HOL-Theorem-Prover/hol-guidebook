@@ -782,10 +782,9 @@ Tags
 -----
 Theorems also contain a set of tags indicating how they were produced. These tags propagate through
 uses in inference applications (e.g. if a theorem has a tag, then a theorem derived from the former
-will inherits this tag). These tags are especially useful with axioms in case there is a suspiscion
+will inherit this tag). These tags are especially useful with axioms in case there is a suspicion
 the axiom may be unsound (e.g. the axiom is taken for correct while not proven, or the axiom comes from
-an “oracle”, or the axiom comes from an external prover however does not come with an HOL proof HOL4
-could validate).
+an "oracle", or the axiom comes from an external prover but without a proof that can be replayed by HOL).
 
 Simple proofs
 --------------
