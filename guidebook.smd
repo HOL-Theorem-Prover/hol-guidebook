@@ -401,6 +401,9 @@ In HOL, unlike in propositional logic, these connectives have no special syntact
 
 As you can see, when writing partial applications of the connectives, their ASCII names must be used.
 Furthermore leading dollar signs must be used, since the default grammar used by the term parser has rules for these connectives expecting them to be fully applied.
+Another way to escape the special parsing of infix (and other special) tokens is to use parentheses:
+
+    >> rand ``P (~)``;
 
 Some library functions
 -----------------------
