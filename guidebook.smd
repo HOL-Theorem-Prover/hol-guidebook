@@ -798,8 +798,17 @@ Useful tactics
 Finding documentation
 ----------------------
 
+HOL contains in-built documentation available from the REPL via the `help` function.
+The same documentation is also available in HTML format both from `$HOLDIR/help/HOLindex.html` and online (TODO: link).
+
+In some cases, some libraries have not yet provided help documentation, but there is still information available in comments in their signature files.
+TODO: Also, how to set up Poly/ML to show the signatures of structures.
+
+TODO: mention the manuals; probably just link back to main website.
+
 System conventions
 -------------------
+TODO: sigobj
 
 Standard theories
 ------------------
