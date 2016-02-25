@@ -799,16 +799,16 @@ Finding documentation
 ----------------------
 
 HOL contains in-built documentation available from the REPL via the `help` function.
-The same documentation is also available in HTML format both from `$HOLDIR/help/HOLindex.html` and online (TODO: link).
+The same documentation is also available in HTML format both from `$HOLDIR/help/HOLindex.html` and [online](https://hol-theorem-prover.org/kananaskis-10-helpdocs/help/HOLindex.html).
 
 In some cases, some libraries have not yet provided help documentation, but there is still information available in comments in their signature files.
 TODO: Also, how to set up Poly/ML to show the signatures of structures.
 
-TODO: mention the manuals; probably just link back to main website.
+Finally, the [HOL website](https://hol-theorem-prover.org/#doc) has information regarding HOL's manuals, which can also be found under `$HOLDIR/Manual` in your local installation.
 
 System conventions
 -------------------
-TODO: sigobj
+TODO: When HOL is built, links to all the theories and libraries are created under `$HOLDIR/sigobj`. This can be a useful resource for finding out where the sources corresponding to a particular structure are kept.
 
 Standard theories
 ------------------
