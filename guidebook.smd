@@ -410,7 +410,7 @@ Some library functions
 HOL comes with a small selection of pre-defined ML functions that are generally useful (and not specific to theorem proving).
 
 The `#1` and `#2` functions are record selectors for elements of tuples in ML.
-In HOL they they are also defined as `fst` and `snd`.
+In HOL they are also defined as `fst` and `snd`.
 
     >> fst (0,1);
 
