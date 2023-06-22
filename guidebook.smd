@@ -238,9 +238,9 @@ If you don't provide a type, HOL will invent one.
 
 Variables are equal if and only if both their name and type match.
 
-    >> y = ``y:'b``;
+    >> Term.compare (y,``y:'b``);
 
-    >> y = mk_var("y",alpha);
+    >> Term.compare (y, mk_var("y",alpha));
 
 #### Constants
 A constant also has a name and a type.
@@ -364,7 +364,7 @@ In HOL they are written as `T` and `F`, and are also bound by default to ML vari
 
     >> T;
 
-    >> ``F`` = F;
+    >> Term.compare (``F``, F);
 
     >> type_of F;
 
