@@ -854,3 +854,177 @@ Writing more tactics
 
 More proofs
 ------------
+
+Modern syntax
+-------------
+
+We summarise the additions of new surface syntax that entered in recent versions of HOL4, which reduces code-smells and is closer to syntax of other theorem provers.
+
+#### Theorem
+
+We have implemented new syntaxes for `store_thm` and `save_thm`, which better satisfy the recommendation that `name1` and `name2` below should be the same:
+
+```
+val name1 = store_thm("name2", tm, tac);
+```
+
+Now we can remove the "code smell" by writing
+
+```
+Theorem name: term-syntax
+Proof tac
+QED
+```
+
+which might look like
+
+```
+Theorem name:
+  ∀x. P x ⇒ Q x
+Proof
+  rpt strip_tac >> ...
+QED
+```
+
+This latter form must have the `Proof` and `QED` keywords in column 0 in order for the lexing machinery to detect the end of the term and tactic respectively.
+Both forms map to applications of `Q.store_thm` underneath, with an ML binding also made to the appropriate name.
+Both forms allow for theorem attributes to be associated with the name, so that one can write
+
+```
+Theorem ADD0[simp]: ∀x. x + 0 = x
+Proof tactic
+QED
+```
+
+Finally, to replace
+
+```
+val nm = save_thm(“nm”, thm_expr);
+```
+
+one can now write
+
+```
+Theorem nm = thm_expr
+```
+
+These names can also be given attributes in the same way.
+
+There is also a new `local` attribute available for use with `store_thm`, `save_thm` and the `Theorem` syntax above.
+This attribute causes a theorem to not be exported when `export_theory` is called, making it local-only.
+Use of `Theorem`-`local` is thus an alternative to using `prove` or `Q.prove`.
+In addition, the `Theorem`-`local` combination can be abbreviated with `Triviality`; one can write `Triviality foo[...]` instead of `Theorem foo[local,...]`.
+
+#### Definition
+
+Relatedly, there is a similar syntax for making definitions.
+The idiom is to write
+
+```
+Definition name[attrs]:
+  def
+End
+```
+
+Or
+
+```
+Definition name[attrs]:
+  def
+Termination
+  tactic
+End
+```
+
+The latter form maps to a call to `tDefine`; the former to `xDefine`.
+In both cases, the `name` is taken to be the name of the theorem stored to disk (it does *not* have a suffix such as `_def` appended to it), and is also the name of the local SML binding.
+The attributes given by `attrs` can be any standard attribute (such as `simp`), and/or drawn from `Definition`-specific options:
+
+- the attribute `schematic` alllows the definition to be schematic;
+- the attribute `nocompute` stops the definition from being added to the global compset used by `EVAL`
+- the attribute `induction=iname` makes the induction theorem that is automatically derived for definitions with interesting termination be called `iname`.
+  If this is omitted, the name chosen will be derived from the `name` of the definition: if `name` ends with `_def` or `_DEF`, the induction name will replace this suffix with `_ind` or `_IND` respectively; otherwise the induction name will simply be `name` with `_ind` appended.
+
+Whether or not the `induction=` attribute is used, the induction theorem is also made available as an SML binding under the appropriate name.
+This means that one does not need to follow one's definition with a call to something like `DB.fetch` or `theorem` just to make the induction theorem available at the SML level.
+
+#### Inductive and CoInductive
+
+Similarly, there are analogous `Inductive` and `CoInductive` syntaxes for defining inductive and coinductive relations (using `Hol_reln` and `Hol_coreln` underneath).
+The syntax is
+
+```
+Inductive stem:
+  quoted term material
+End
+```
+
+or
+
+```
+CoInductive stem:
+  quoted term material
+End
+```
+
+where, as above, the `Inductive`, `CoInductive` and `End` keywords must be in the leftmost column of the script file.
+The `stem` part of the syntax drives the selection of the various theorem names (*e.g.*, `stem_rules`, `stem_ind`, `stem_cases` and `stem_strongind` for inductive definitions) for both the SML environment and the exported theory.
+The actual names of new constants in the quoted term material do not affect these bindings.
+
+
+#### Datatype
+
+There are new syntaxes for `Datatype` and type-abbreviation.
+Users can replace `` val _ = Datatype`...`  `` with
+
+```
+Datatype: ...
+End
+```
+
+and `val _ = type_abbrev("name", ty)` with
+
+```
+Type name = ty
+```
+
+if the abbreviation should introduce pretty-printing (which would be done with `type_abbrev_pp`), the syntax is
+
+```
+Type name[pp] = ty
+```
+
+Note that in both `Type` forms the `ty` is a correct ML value, and may thus require quoting.
+For example, the `set` abbreviation is established with
+
+```
+Type set = “:α -> bool”
+```
+
+The special `Type` syntax for making type abbreviations can now map to
+`temp_type_abbrev` (or `temp_type_abbrev_pp`) by adding the `local`
+attribute to the name of the abbreviation.
+
+For example
+
+```
+Type foo[local] = “:num -> bool # num”
+```
+
+or
+
+```
+Type foo[local,pp] = “:num -> bool # num”
+```
+
+#### Overload
+
+We have added a special syntactic form `Overload` to replace various flavours of `overload_on` calls. The core syntax is exemplified by
+
+```
+Overload foo = “myterm”
+```
+
+Attributes can be added after the name.
+Possible attributes are `local` (for overloads that won't be exported) and `inferior` to cause a call `inferior_overload_on` (which makes the overload the pretty-printer's last choice).
+
