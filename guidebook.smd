@@ -761,7 +761,7 @@ One can also search again within the results.
 The data are printed more nicely by `print_find`, which prints the data list as follows.
 
 ~~~~
->>_ val s = DB.data_list_to_string it;
+>>_ val s = Hol_pp.data_list_to_string it;
 
 >>__ val s = Substring.string(Substring.triml 2 (Substring.full s))
 >> say s;
