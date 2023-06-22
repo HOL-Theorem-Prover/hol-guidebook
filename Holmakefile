@@ -1,6 +1,6 @@
 INCLUDES=$(HOLDIR)/Manual/Tools
 index.html: guidebook.md
-	pandoc -S -s -c style.css --toc $< -o $@
+	pandoc -s -c style.css --toc $< -o $@
 guidebook.md: guidebook.smd $(HOLDIR)/Manual/Tools/polyscripter
 	$(HOLDIR)/Manual/Tools/polyscripter < $< > $@
 .PHONY: publish
