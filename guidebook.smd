@@ -972,12 +972,13 @@ The `stem` part of the syntax drives the selection of the various theorem names 
 The actual names of new constants in the quoted term material do not affect these bindings.
 
 Each (co)inductive rule can be exported under a theorem name provided in square-bracket syntax `[~name:]`, where `~` is a place-holder for the relation.
+If used, these bracketed names stand in for conjunctions (except for the first such), so conjunctions should be omitted.
 For example
 
 ```
 Inductive RTC:
 [~refl:]
-  (!x. RTC R x x) /\
+  !x. RTC R x x
 [~induct:]
   !x y z. R x y /\ RTC R y z ==> RTC R x z
 End
